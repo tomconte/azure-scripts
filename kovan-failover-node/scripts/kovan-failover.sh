@@ -42,7 +42,8 @@ sed -i "s/USERNAME/${AZUREUSER}/" parity.conf
 sed -i "s/USERNAME/${AZUREUSER}/" parity.service
 
 cp parity.service /etc/systemd/system/
-cp parity.conf /root/
+chown ${AZUREUSER} parity.conf
+cp parity.conf /home/${AZUREUSER}/
 systemctl --system enable parity
 
 # Run script as regular user
