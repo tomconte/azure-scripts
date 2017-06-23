@@ -3,7 +3,7 @@ Description=Parity Daemon
 After=network.target
 
 [Service]
-EnvironmentFile=%h/parity.conf
+EnvironmentFile=/home/USERNAME/parity.conf
 ExecStart=/usr/bin/parity $ARGS
 User=USERNAME
 
