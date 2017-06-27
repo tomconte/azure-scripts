@@ -50,5 +50,5 @@ chown ${AZUREUSER} ${USER_SCRIPT}
 chmod +x ${USER_SCRIPT}
 su -l ${AZUREUSER} -c "${HOMEDIR}/${USER_SCRIPT} \"${ACCOUNT_WALLET}\" \"${ACCOUNT_PASSWORD}\""
 sleep 10
-shutdown -r +5 "rebooting system"
+shutdown -r +2 "rebooting system"
 
