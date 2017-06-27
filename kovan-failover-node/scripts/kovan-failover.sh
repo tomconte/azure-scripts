@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 # Executed as root.
 
 PARITY_URL='http://d1h4xl4cr1h0mo.cloudfront.net/beta/x86_64-unknown-linux-gnu/parity'
@@ -51,4 +50,5 @@ chown ${AZUREUSER} ${USER_SCRIPT}
 chmod +x ${USER_SCRIPT}
 su -l ${AZUREUSER} -c "${HOMEDIR}/${USER_SCRIPT} \"${ACCOUNT_WALLET}\" \"${ACCOUNT_PASSWORD}\""
 sleep 10
-reboot
+shutdown -r +5 "rebooting system"
+
