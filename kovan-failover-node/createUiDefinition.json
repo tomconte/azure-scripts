@@ -1,0 +1,175 @@
+{
+    "handler": "Microsoft.Compute.MultiVm",
+    "version": "0.0.2-preview",
+    "parameters": {
+        "basics": [
+            {
+                "name": "section1",
+                "type": "Microsoft.Common.Section",
+                "label": "VM Credentials",
+                "elements": [
+                    {
+                        "name": "adminUsername",
+                        "type": "Microsoft.Compute.UserNameTextBox",
+                        "label": "Username",
+                        "toolTip": "Admin username for the virtual machine.",
+                        "osPlatform": "Linux"
+                    },
+                    {
+                        "name": "adminCredentials",
+                        "type": "Microsoft.Compute.CredentialsCombo",
+                        "label": {
+                            "authenticationType": "Authentication type",
+                            "password": "Password",
+                            "confirmPassword": "Confirm password",
+                            "sshPublicKey": "SSH public key"
+                        },
+                        "toolTip": {
+                            "authenticationType": "",
+                            "password": "VM password must be 12 characters and have 3 of the following: 1 lower case character, 1 upper case character, 1 number, and 1 special character.",
+                            "sshPublicKey": ""
+                        },
+                        "constraints": {
+                            "required": true
+                        },
+                        "options": {
+                            "hideConfirmation": false
+                        },
+                        "osPlatform": "Linux"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "section2",
+                "type": "Microsoft.Common.Section",
+                "label": "Parity Settings",
+                "elements": [
+                    {
+                        "name": "accountRecoveryWallet",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Recovery Wallet",
+                        "defaultValue": "",
+                        "toolTip": "Recovery wallet file. Copy/paste the contents of your wallet account JSON file.",
+                        "constraints": {},
+                        "options": {},
+                        "visible": true
+                    },
+                    {
+                        "name": "accountPassword",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Account Password",
+                        "defaultValue": "",
+                        "toolTip": "Password for the account. Enter the password used to secure the wallet file.",
+                        "constraints": {},
+                        "options": {},
+                        "visible": true
+                    }
+                ],
+                "visible": true
+            }
+        ],
+        "steps": [
+            {
+                "name": "vmConfig",
+                "label": "VM settings",
+                "subLabel": {
+                    "preValidation": "Configure the VM",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "Virtual Machine settings",
+                "elements": [
+                    {
+                        "name": "vmSize",
+                        "type": "Microsoft.Compute.SizeSelector",
+                        "label": "Virtual machine size",
+                        "toolTip": "The size of the virtual machine to provision.",
+                        "recommendedSizes": [
+                            "Standard_A1",
+                            "Standard_A2",
+                            "Standard_A3",
+                            "Standard_A4",
+                            "Standard_D1",
+                            "Standard_D2",
+                            "Standard_D3",
+                            "Standard_D4"
+                        ],
+                        "constraints": {
+                            "allowedSizes": [
+                                "Standard_A1",
+                                "Standard_A2",
+                                "Standard_A3",
+                                "Standard_A4",
+                                "Standard_D1",
+                                "Standard_D2",
+                                "Standard_D3",
+                                "Standard_D4"
+                            ]
+                        },
+                        "osPlatform": "Linux",
+                        "imageReference": {
+                            "publisher": "Canonical",
+                            "offer": "UbuntuServer",
+                            "sku": "16.04-LTS"
+                        },
+                        "count": 1
+                    },
+                    {
+                        "name": "publicIp",
+                        "type": "Microsoft.Network.PublicIpAddressCombo",
+                        "label": {
+                            "publicIpAddress": "Public IP address for the Parity VM",
+                            "domainNameLabel": "Domain Name Label for the Parity VM"
+                        },
+                        "defaultValue": {
+                            "publicIpAddressName": "parityPublicIP"
+                        },
+                        "constraints": {
+                            "required": {
+                                "domainNameLabel": true
+                            }
+                        },
+                        "options": {
+                            "hideNone": true,
+                            "hideDomainNameLabel": false,
+                            "hideExisting": true
+                        }
+                    },
+                    {
+                        "name": "storageAccount",
+                        "type": "Microsoft.Storage.StorageAccountSelector",
+                        "label": "Storage account",
+                        "toolTip": "Storage Account for the Virtual Machine's Disks",
+                        "defaultValue": {
+                            "type": "Standard_LRS"
+                        },
+                        "constraints": {
+                            "allowedTypes": [
+                                "Standard_LRS",
+                                "Standard_GRS"
+                            ],
+                            "required": true
+                        },
+                        "options": {
+                            "hideExisting": true
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "adminUsername": "[basics('section1').adminUsername]",
+            "authType": "[basics('section1').adminCredentials.authenticationType]",
+            "adminPassword": "[basics('section1').adminCredentials.password]",
+            "adminSSHKey": "[basics('section1').adminCredentials.sshPublicKey]",
+            "accountRecoveryWallet": "[basics('section2').accountRecoveryWallet]",
+            "accountPassword": "[basics('section2').accountPassword]",
+            "vmSize": "[steps('vmConfig').vmSize]",
+            "location": "[location()]",
+            "storageAccountName": "[steps('vmConfig').storageAccount.name]",
+            "storageAccountType": "[steps('vmConfig').storageAccount.type]",
+            "vmDnsPrefix": "[steps('vmConfig').publicIp.domainNameLabel]",
+            "publicIPAddressName": "[steps('vmConfig').publicIp.name]"
+        }
+    }
+}

@@ -8,6 +8,16 @@
         "description": "This is the unique DNS name of the for the public IP for your VM"
       }
     },
+    "authType": {
+      "type": "string",
+      "allowedValues": [
+        "password",
+        "sshPublicKey"
+      ],
+      "metadata": {
+        "description": "Authorization type for SSH access to VMs"
+      }
+    },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -16,50 +26,64 @@
     },
     "adminPassword": {
       "type": "securestring",
+      "defaultValue": "",
       "metadata": {
         "description": "This is the the password you wish to assign to your VMs admin account"
       }
     },
+    "adminSSHKey": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "SSH RSA public key file as a string"
+      }
+    },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_D3_v2",
-      "allowedValues": [
-        "Standard_D1_v2",
-        "Standard_D2_v2",
-        "Standard_D3_v2",
-        "Standard_D4_v2"
-      ],
       "metadata": {
         "description": "Size of VM"
       }
     },
-    "accountRecoveryPhrase": {
+    "publicIPAddressName": {
       "type": "string",
       "metadata": {
-        "description": "Recovery phrase used to create the account"
+        "description": "Name for the public IP address"
       }
-
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name for the storage account"
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "metadata": {
+        "description": "Type of the storage account"
+      }
+    },
+    "accountRecoveryWallet": {
+      "type": "string",
+      "metadata": {
+        "description": "Wallet file for the recovery account"
+      }
     },
     "accountPassword": {
       "type": "string",
       "metadata": {
         "description": "Password for the account"
       }
-
     },
-    "_artifactsLocation": {
+    "location": {
+      "type": "string"
+    },
+    "baseUrl": {
       "type": "string",
       "metadata": {
-        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+        "description": "The base URL for dependent assets",
+        "artifactsBaseUrl": ""
       },
-      "defaultValue": "https://raw.githubusercontent.com/paritytech/azure-scripts/master/kovan-failover-node/"
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-      },
-      "defaultValue": ""
+      "defaultValue": "https://tcopackersa.blob.core.windows.net/mkt"
     }
   },
   "variables": {
@@ -71,32 +95,43 @@
     "imageOffer": "UbuntuServer",
     "subnetName": "Subnet-1",
     "subnetPrefix": "10.0.0.0/24",
-    "storageAccountType": "Standard_LRS",
-    "publicIPAddressName": "publicIP",
     "publicIPAddressType": "Dynamic",
     "vmStorageAccountContainerName": "vhds",
     "vmName": "[parameters('vmDnsPrefix')]",
     "virtualNetworkName": "VNET",
-    "apiVersion": "2015-06-15",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-    "storageAccountName": "[concat(uniquestring(resourceGroup().id, 'block'))]"
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/', variables('subnetName'))]",
+    "sshKeyPath": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+    "linuxConfiguration_sshPublicKey": {
+      "disablePasswordAuthentication": "true",
+      "ssh": {
+        "publicKeys": [
+          {
+            "path": "[variables('sshKeyPath')]",
+            "keyData": "[parameters('adminSSHKey')]"
+          }
+        ]
+      }
+    },
+    "linuxConfiguration_password": {},
+    "linuxConfiguration": "[variables(concat('linuxConfiguration_', parameters('authType')))]"
   },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('storageAccountName')]",
-      "apiVersion": "[variables('apiVersion')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "accountType": "[variables('storageAccountType')]"
+      "name": "[parameters('storageAccountName')]",
+      "apiVersion": "2017-06-01",
+      "location": "[parameters('location')]",
+      "kind": "Storage",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
       }
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2017-06-01",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddressName')]",
-      "location": "[resourceGroup().location]",
+      "name": "[parameters('publicIPAddressName')]",
+      "location": "[parameters('location')]",
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
@@ -105,10 +140,10 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2017-06-01",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -126,12 +161,12 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
+      "apiVersion": "2017-06-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('nicName')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/publicIPAddresses/', parameters('publicIPAddressName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
@@ -141,7 +176,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
               },
               "subnet": {
                 "id": "[variables('subnetRef')]"
@@ -152,12 +187,12 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2017-03-30",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
       "properties": {
@@ -167,7 +202,8 @@
         "osProfile": {
           "computername": "[variables('vmName')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "adminPassword": "[parameters('adminPassword')]",
+          "linuxConfiguration": "[variables('linuxConfiguration')]"
         },
         "storageProfile": {
           "imageReference": {
@@ -179,7 +215,7 @@
           "osDisk": {
             "name": "osdisk1",
             "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'), '/osdisk1.vhd')]"
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'), '/osdisk1.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -197,8 +233,8 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'),'/newuserscript')]",
-      "apiVersion": "[variables('apiVersion')]",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2017-03-30",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
@@ -209,11 +245,11 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), 'scripts/kovan-failover.sh')]"
+            "[concat(parameters('baseUrl'), '/scripts/kovan-failover.sh')]"
           ]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('/bin/bash kovan-failover.sh ', parameters('adminUserName'), ' ', parameters('_artifactsLocation'), ' \"', parameters('accountRecoveryPhrase'), '\" \"', parameters('accountPassword'), '\"')]"
+          "commandToExecute": "[concat('/bin/bash kovan-failover.sh ', parameters('adminUserName'), ' ', parameters('baseUrl'), ' \"', parameters('accountRecoveryWallet'), '\" \"', parameters('accountPassword'), '\"')]"
         }
       }
     }
