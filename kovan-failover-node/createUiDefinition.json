@@ -113,46 +113,6 @@
                             "sku": "16.04-LTS"
                         },
                         "count": 1
-                    },
-                    {
-                        "name": "publicIp",
-                        "type": "Microsoft.Network.PublicIpAddressCombo",
-                        "label": {
-                            "publicIpAddress": "Public IP address for the Parity VM",
-                            "domainNameLabel": "Domain Name Label for the Parity VM"
-                        },
-                        "defaultValue": {
-                            "publicIpAddressName": "parityPublicIP"
-                        },
-                        "constraints": {
-                            "required": {
-                                "domainNameLabel": true
-                            }
-                        },
-                        "options": {
-                            "hideNone": true,
-                            "hideDomainNameLabel": false,
-                            "hideExisting": true
-                        }
-                    },
-                    {
-                        "name": "storageAccount",
-                        "type": "Microsoft.Storage.StorageAccountSelector",
-                        "label": "Storage account",
-                        "toolTip": "Storage Account for the Virtual Machine's Disks",
-                        "defaultValue": {
-                            "type": "Standard_LRS"
-                        },
-                        "constraints": {
-                            "allowedTypes": [
-                                "Standard_LRS",
-                                "Standard_GRS"
-                            ],
-                            "required": true
-                        },
-                        "options": {
-                            "hideExisting": true
-                        }
                     }
                 ]
             }
@@ -165,11 +125,7 @@
             "accountRecoveryWallet": "[basics('section2').accountRecoveryWallet]",
             "accountPassword": "[basics('section2').accountPassword]",
             "vmSize": "[steps('vmConfig').vmSize]",
-            "location": "[location()]",
-            "storageAccountName": "[steps('vmConfig').storageAccount.name]",
-            "storageAccountType": "[steps('vmConfig').storageAccount.type]",
-            "vmDnsPrefix": "[steps('vmConfig').publicIp.domainNameLabel]",
-            "publicIPAddressName": "[steps('vmConfig').publicIp.name]"
+            "location": "[location()]"
         }
     }
 }
