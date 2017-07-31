@@ -73,6 +73,7 @@
     "subnetPrefix": "10.0.0.0/24",
     "publicIPAddressType": "Dynamic",
     "publicIPAddressName": "ParityIP",
+    "frontEndNSGName": "Front-End-NSG",
     "storagePerformance": "Standard_LRS",
     "vmName": "ParityVM",
     "virtualNetworkName": "VNET",
@@ -117,6 +118,47 @@
     },
     {
       "apiVersion": "2017-06-01",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('frontEndNSGName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "NSG - Front End"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "ssh-rule",
+            "properties": {
+              "description": "Allow SSH",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "jsonrpc-rule",
+            "properties": {
+              "description": "Allow JSON-RPC",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "8585",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2017-06-01",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[parameters('location')]",
@@ -130,7 +172,10 @@
           {
             "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefix": "[variables('subnetPrefix')]"
+              "addressPrefix": "[variables('subnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontEndNSGName'))]"
+              }
             }
           }
         ]
