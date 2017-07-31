@@ -96,7 +96,13 @@
                             "Standard_D1",
                             "Standard_D2",
                             "Standard_D3",
-                            "Standard_D4"
+                            "Standard_D4",
+                            "Standard_D1_v2",
+                            "Standard_D2_v2",
+                            "Standard_D3_v2",
+                            "Standard_D4_v2",
+                            "Standard_D2_v3",
+                            "Standard_D4_v3"
                         ],
                         "constraints": {
                             "allowedSizes": [
@@ -107,10 +113,15 @@
                                 "Standard_D1",
                                 "Standard_D2",
                                 "Standard_D3",
-                                "Standard_D4"
+                                "Standard_D4",
+                                "Standard_D1_v2",
+                                "Standard_D2_v2",
+                                "Standard_D3_v2",
+                                "Standard_D4_v2",
+                                "Standard_D2_v3",
+                                "Standard_D4_v3"
                             ]
                         },
-                        "osPlatform": "Linux",
                         "imageReference": {
                             "publisher": "Canonical",
                             "offer": "UbuntuServer",
