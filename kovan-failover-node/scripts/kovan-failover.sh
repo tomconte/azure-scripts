@@ -32,9 +32,9 @@ bash <(curl https://get.parity.io -Lk)
 # Download required files
 
 cd ${HOMEDIR}
-wget --no-verbose "${ARTIFACTS_URL}scripts/${USER_SCRIPT}"
-wget --no-verbose "${ARTIFACTS_URL}scripts/parity.conf"
-wget --no-verbose "${ARTIFACTS_URL}scripts/parity.service"
+wget --no-verbose "${ARTIFACTS_URL}/scripts/${USER_SCRIPT}"
+wget --no-verbose "${ARTIFACTS_URL}/scripts/parity.conf"
+wget --no-verbose "${ARTIFACTS_URL}/scripts/parity.service"
 
 # Setup startup scripts
 sed -i "s/USERNAME/${AZUREUSER}/" parity.conf
