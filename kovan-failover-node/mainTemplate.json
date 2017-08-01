@@ -273,7 +273,10 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('baseUrl'), '/scripts/kovan-failover.sh')]"
+            "[concat(parameters('baseUrl'), '/scripts/kovan-failover.sh')]",
+            "[concat(parameters('baseUrl'), '/scripts/kovan-failover-user.sh')]",
+            "[concat(parameters('baseUrl'), '/scripts/parity.conf')]",
+            "[concat(parameters('baseUrl'), '/scripts/parity.service')]"
           ]
         },
         "protectedSettings": {

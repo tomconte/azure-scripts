@@ -30,11 +30,12 @@ bash <(curl https://get.parity.io -Lk)
 
 
 # Download required files
+cd $HOME
+cp ${USER_SCRIPT} ${HOMEDIR}
+cp parity.conf ${HOMEDIR}
+cp parity.service ${HOMEDIR}
 
 cd ${HOMEDIR}
-wget --no-verbose "${ARTIFACTS_URL}/scripts/${USER_SCRIPT}"
-wget --no-verbose "${ARTIFACTS_URL}/scripts/parity.conf"
-wget --no-verbose "${ARTIFACTS_URL}/scripts/parity.service"
 
 # Setup startup scripts
 sed -i "s/USERNAME/${AZUREUSER}/" parity.conf
@@ -50,5 +51,6 @@ chown ${AZUREUSER} ${USER_SCRIPT}
 chmod +x ${USER_SCRIPT}
 su -l ${AZUREUSER} -c "${HOMEDIR}/${USER_SCRIPT} \"${ACCOUNT_WALLET}\" \"${ACCOUNT_PASSWORD}\""
 sleep 10
+pkill parity
 shutdown -r +2 "rebooting system"
 
