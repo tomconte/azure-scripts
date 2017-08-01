@@ -66,7 +66,7 @@
                             "required": true
                         },
                         "options": {
-                            "hideConfirmation": false
+                            "hideConfirmation": true
                         },
                         "visible": true
                     }
