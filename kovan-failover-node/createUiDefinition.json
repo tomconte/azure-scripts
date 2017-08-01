@@ -58,14 +58,15 @@
                     },
                     {
                         "name": "accountPassword",
-                        "type": "Microsoft.Common.TextBox",
+                        "type": "Microsoft.Common.PasswordBox",
                         "label": "Account Password",
                         "defaultValue": "",
                         "toolTip": "Password for the account. Enter the password used to secure the wallet file.",
                         "constraints": {
-                            "required": true,
-                            "regex": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[^\"/]{12,}$",
-                            "validationMessage": "Password must be 12 characters or more with a minimum of 1 lower case, 1 upper case and one number. Double quotes and forward slashses are not allowed."
+                            "required": true
+                        },
+                        "options": {
+                            "hideConfirmation": false
                         },
                         "visible": true
                     }
