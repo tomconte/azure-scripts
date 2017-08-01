@@ -119,7 +119,9 @@
                                 "Standard_D3_v2",
                                 "Standard_D4_v2",
                                 "Standard_D2_v3",
-                                "Standard_D4_v3"
+                                "Standard_D4_v3",
+                                "Standard_E2_v3",
+                                "Standard_E4_v3"
                             ]
                         },
                         "imageReference": {
