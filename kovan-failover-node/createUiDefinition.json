@@ -125,11 +125,7 @@
                                 "Standard_E4_v3"
                             ]
                         },
-                        "imageReference": {
-                            "publisher": "Canonical",
-                            "offer": "UbuntuServer",
-                            "sku": "16.04-LTS"
-                        },
+                        "osPlatform": "Linux",
                         "count": 1
                     }
                 ]
