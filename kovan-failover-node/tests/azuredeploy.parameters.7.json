@@ -1,0 +1,27 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "value": "azureuser"
+        },
+        "authType": {
+            "value": "sshPublicKey"
+        },
+        "adminSSHKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUBnwVgwPs1U0D0wUdOtIllMdaIxC6dpKijgP3mapZuHdsfxjG9ojAkjyuh1rLUOZHW5b2TRdV3+BdiAl7yyepZ6sAzm9iEn/W/xR1Q6XP/zAVJ/AcNn3GnJ6WfIUIyOHKUsH/8SxixPcqtH0NpTrw1jtUO19TjyRF1k6OPnW2VrG8sdEn4OaUw2Ftx3sK2mtf1UB8MazyI8xslJnu2DzL1coeKbgi6RiUzwThU5u9T0wssxFzjwras2nBlChiBjb1EBN1EM/97/960uTBod55QEKCRMTD0TQny/zs/rPu1IwxaDExsRKzq028/N9e6GZWuFh6hZ6XZt3+RPUjUpHj"
+        },
+        "accountRecoveryWallet": {
+            "value": "{\"version\":3,\"id\":\"1222c82c-d33e-4b94-a19b-91cd4e4e26c1\",\"address\":\"c775c4f28cd143dd71cf424367d41bad898f132e\",\"Crypto\":{\"ciphertext\":\"626914116c1e44d6603c6b0160e23be29425121828bc6ebde9b0a4ed504f03eb\",\"cipherparams\":{\"iv\":\"274a9b763fbdfd56edd4e0ef6e80f17d\"},\"cipher\":\"aes-128-ctr\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"salt\":\"27bb1fa90d084d94a6a2214fef02f08da48b0748b7002f15db520f2635e717c5\",\"n\":1024,\"r\":8,\"p\":1},\"mac\":\"16fade0c0934bb35f2f672cde89c42611dd9e2d91f09e4cf64472df8d2608a95\"}}"
+        },
+        "accountPassword": {
+            "value": "Password1234!"
+        },
+        "vmSize": {
+            "value": "Standard_E2_v3"
+        },
+        "location": {
+            "value": "westeurope"
+        }
+    }
+}
